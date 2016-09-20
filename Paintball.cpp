@@ -15,52 +15,25 @@ typedef vector<vi> vvi;
 
 vvi adj_list;
 
-map<ii, int> capacity, flow;
+vi match, visited;
 
 void add_edge(int A, int B){
     adj_list[A].push_back(B);
-    flow[make_pair(A, B)] = 0;
-    capacity[make_pair(A, B)] = 1;
 
     adj_list[B].push_back(A);
-    flow[make_pair(B, A)] = 0;
-    capacity[make_pair(B, A)] = 0;
 }
 
-set<ii> find_path(int s, int t, set<ii> path){
-    if(s==t)
-        return path;
-    for(auto dest : adj_list[s]){
-        auto edge = make_pair(s, dest);
-        if(path.find(edge) == path.end() &&
-                capacity[edge] - flow[edge] > 0){
-            path.insert(edge);
-            set<ii> new_path = find_path(dest, t, path);
-            if(!new_path.empty())
-                return new_path;
-            else
-                path.erase(edge);
+int Aug(int left){
+    if(visited[left])
+        return 0;
+    visited[left] = 1;
+    for(auto right : adj_list[left]){
+        if(match[right]==0 || Aug(match[right])){
+            match[right] = left;
+            return 1;
         }
     }
-    return set<ii>();
-}
-
-void match(int s, int t){
-    set<ii> path = find_path(s, t, set<ii>());
-    while(!path.empty()){
-        //Look for smallest residual
-        int min_flow = capacity[*(path.begin())] - flow[*(path.begin())];
-        for(auto it=++path.begin(); it!=path.end(); it++)
-            min_flow = min(min_flow, capacity[*it] - flow[*it]);
-
-        //Apply new flow
-        for(auto edge : path){
-            flow[edge] += min_flow;
-            flow[make_pair(edge.second, edge.first)] -= min_flow;
-        }
-
-        path = find_path(s, t, set<ii>());
-    }
+    return 0;
 }
 
 int main(){
@@ -76,30 +49,19 @@ int main(){
         add_edge(B, N+A);
     }
 
-    //Add source and sink
-    for(auto i=1; i<=N; i++)
-        add_edge(0, i);
-    for(auto i=N+1; i<=2*N; i++)
-        add_edge(i, 2*N+1);
-
     //Determine best pair matching
-    match(0, 2*N+1);
-
-    //Count number of pairs, if != N, print impossible
-    int count = 0;
-    vi solution(3*N);
-    for(auto item : flow){
-        if(item.second == 1){
-            count += item.second;
-            auto edge = item.first;
-            solution[edge.first] = edge.second;
-        }
+    int MCBM = 0;
+    match.assign(3*N, 0);
+    for(int left=1; left<=N; left++){
+        visited.assign(N+1, 0);
+        MCBM += Aug(left);
     }
-    if(count != 3*N)
+
+    if(MCBM != N)
         printf("Impossible\n");
     else
-        for(auto i=1; i<=N; i++)
-            printf("%d\n", solution[i]-N);
+        for(auto i=N+1; i<=2*N; i++)
+            printf("%d\n", match[i]);
 
     return 0;
 }
