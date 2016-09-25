@@ -9,8 +9,10 @@ using namespace std;
 int main(){
     map<long long, long long> dp;
     long long add;
-    long long N = 100;
-    for(auto i=1;i<N;i++){
+    long long N = 1000000000;
+    for(long long i=1;i<N;i++){
+        if(!(i%(N/100)))
+            cerr << i << "\n";
         long long new_i = i + rev(i);
         if(new_i>N)
             continue;
@@ -26,6 +28,7 @@ int main(){
         else
             dp[new_i] += add;
     }
+    cerr << "Writing data\n";
     long long prev = 0;
     cout << "dp[" << 0 << "]=" << 0 << ";\n";
     for(auto it = dp.begin(); it!=dp.end(); it++){

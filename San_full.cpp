@@ -11,10 +11,11 @@ int main(){
 
     long long A, B;
     cin >> A >> B;
-    cout << B-A + 1 + reverse_iterator<map<long long, long long>::iterator>(dp.upper_bound(B))->second - reverse_iterator<map<long long, long long>::iterator>(dp.upper_bound(A))->second << "\n";
-    //cout << B-A + 1 << "\n";
-    //cout << reverse_iterator<map<long long, long long>::iterator>(dp.upper_bound(B))->second << "\n";
-    //cout << (reverse_iterator<map<long long, long long>::iterator>(dp.upper_bound(A)))->second << "\n";
+    cout << B-A + 1 
+        + (reverse_iterator<map<long long, long long>::iterator>(dp.upper_bound(B)))->second
+        - reverse_iterator<map<long long, long long>::iterator>(dp.lower_bound(A))->second << "\n";
+    cerr << (reverse_iterator<map<long long, long long>::iterator>(dp.upper_bound(B)))->first << " ";
+    cerr << (reverse_iterator<map<long long, long long>::iterator>(dp.lower_bound(A)))->first << "\n";
 
     return 0;
 }
