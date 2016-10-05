@@ -47,11 +47,8 @@ int main(){
                 else if(v != ancestor[u]){
                     bk = 1;
                     res = min(res, dist[u] + dist[v] + 1);
-                    break;
                 }
             }
-            if(bk)
-                break;
         }
     }
     if(res==INF)
