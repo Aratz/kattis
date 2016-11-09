@@ -39,6 +39,8 @@ int fill_dp(int n, int size){
         fill_dp(n-1, size);
         if(size - cycles[roots[n]].first >= 0)
             fill_dp(n-1, size - cycles[roots[n]].first);
+        else
+            return dp[n-1][size];
 
         return dp[n][size] = max(dp[n-1][size],
                 dp[n-1][size - cycles[roots[n]].first] + cycles[roots[n]].second);
