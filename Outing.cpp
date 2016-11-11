@@ -40,7 +40,7 @@ int fill_dp(int n, int size){
         if(size - cycles[roots[n]].first >= 0)
             fill_dp(n-1, size - cycles[roots[n]].first);
         else
-            return dp[n-1][size];
+            return dp[n][size] = dp[n-1][size];
 
         return dp[n][size] = max(dp[n-1][size],
                 dp[n-1][size - cycles[roots[n]].first] + cycles[roots[n]].second);
@@ -65,13 +65,12 @@ int main(){
 
     for(int i=0; i<n; i++){
         int j = i;
-        //Traverse graph until a loop is found
         while(mark[j] == -1){
             mark[j] = i;
             j = nodes[j];
         }
         if(mark[j] == i){ //Unvisited cycle detected
-            int k = j; //Remember cycle entry node
+            int k = j;
             int cycle_size = 1;
             while(nodes[j] != k){
                 int jt = j; //Turn cycle into a tree for later union find
@@ -83,7 +82,6 @@ int main(){
         }
     }
 
-    //Accumulate number of children on the roots
     for(int i=0; i<n; i++){
         int root = find_root(i, nodes);
         if(root == i)
@@ -91,10 +89,6 @@ int main(){
         cycles[root].second += 1;
     }
 
-    for(auto v : cycles)
-        cerr << v.first+1 << " " << v.second.first << " " << v.second.second << "\n";
-
-    cerr << fill_dp(roots.size()-1, k) << "\n";
     printf("%d\n", min(k, fill_dp(roots.size()-1, k)));
     return 0;
 }
