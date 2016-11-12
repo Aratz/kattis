@@ -10,7 +10,7 @@ int find(int n){
 }
 
 void uni(int a, int b){
-    nodes[a] = nodes[b];
+    nodes[find(a)] = find(b);
 }
 
 int main(){
