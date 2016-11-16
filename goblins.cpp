@@ -2,6 +2,7 @@
 #include <utility>
 #include <cstdio>
 #include <iostream>
+#include <map>
 
 #define XMAX 10000
 #define RMAX 100
@@ -10,8 +11,9 @@ using namespace std;
 
 typedef pair<int, int> ii;
 typedef vector<ii> vii;
-typedef vector<vii> vvii;
-typedef vector<vvii> vvvii;
+typedef map<ii, int> mii;
+typedef vector<mii> vmii;
+typedef vector<vmii> vvmii;
 
 bool check_dist(const ii &a, const ii &b, int r){
     return (a.first-b.first)*(a.first-b.first)
@@ -20,9 +22,9 @@ bool check_dist(const ii &a, const ii &b, int r){
 
 int main(){
     int n = XMAX/RMAX + 2;
-    vvvii coarse_map(n);
+    vvmii coarse_map(n);
     for(int i=0; i<n; i++)
-        coarse_map[i] = vvii(n);
+        coarse_map[i] = vmii(n);
 
     vii moves;
     for(int i=-1;i<=1;i++)
@@ -34,7 +36,11 @@ int main(){
     for(int i=0;i<g;i++){
         int x,y;
         scanf("%d %d", &x, &y);
-        coarse_map[x/RMAX][y/RMAX].push_back(ii(x,y));
+        auto& grain = coarse_map[x/RMAX][y/RMAX];
+        if(grain.find(ii(x,y)) != grain.end())
+            grain[ii(x,y)] += 1;
+        else
+            grain[ii(x,y)] = 1;
     }
 
     int m;
@@ -49,12 +55,14 @@ int main(){
                     || yt < 0 || yt > n-1)
                 continue;
 
-            vii& goblins = coarse_map[x/RMAX+move.first][y/RMAX+move.second];
-            for(int i=0; i<goblins.size(); i++){
-                if(check_dist(goblins[i], ii(x,y), r)){
-                    g -= 1;
-                    goblins.erase(goblins.begin() + (i--));
+            auto& goblins = coarse_map[x/RMAX+move.first][y/RMAX+move.second];
+            for(auto it=goblins.begin(); it!= goblins.end();){
+                if(check_dist(it->first, ii(x,y), r)){
+                    g -= it->second;
+                    it = goblins.erase(it);
                 }
+                else
+                    ++it;
             }
         }
     }
