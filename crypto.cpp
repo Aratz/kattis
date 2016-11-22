@@ -9,8 +9,8 @@ using namespace std;
 
 typedef long long ll;
 typedef vector<int> vi;
-typedef map<int, int> mi;
-typedef pair<int, int> ii;
+typedef map<ll, int> mi;
+typedef pair<ll, int> ii;
 
 ll _sieve_size;
 bitset<10000010> bs;
@@ -39,7 +39,7 @@ mi primeFactors(ll N) {
     // remember: vi is vector<int>, ll is long long
     mi factors;
     ll PF_idx = 0, PF = primes[PF_idx]; // primes has been populated by sieve
-    while (PF * PF <= N) {
+    while (PF * PF <= N && PF_idx < primes.size()) {
         // stop at sqrt(N); N can get smaller
         int exp = 0;
         while (N % PF == 0){
@@ -67,6 +67,6 @@ int main(){
     for(auto factor : factors)
         if(factor.second > max.second)
             max = factor;
-    printf("%d\n", max.first);
+    printf("%lld\n", max.first);
     return 0;
 }
