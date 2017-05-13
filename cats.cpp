@@ -52,8 +52,7 @@ int main(){
             }
             k += 1;
         }
-        printf("%d ", w);
-        if(w <= M) printf("yes\n");
+        if(w + C <= M) printf("yes\n");
         else printf("no\n");
     }
     return 0;
