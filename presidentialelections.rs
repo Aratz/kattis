@@ -31,8 +31,7 @@ impl fmt::Debug for State {
     }
 }
 
-fn update_map(mut h:HashMap<(usize, i32), i32>, n:usize, size:i32, states:&Vec<&State>)
-    -> HashMap<(usize, i32), i32> {
+fn update_map(h:&mut HashMap<(usize, i32), i32>, n:usize, size:i32, states:&Vec<&State>){
     if h.contains_key(&(n, size)) { () }
     else if n == 0 {
         if states[n].d <= size {
@@ -46,9 +45,8 @@ fn update_map(mut h:HashMap<(usize, i32), i32>, n:usize, size:i32, states:&Vec<&
         h.insert((n, size), 0);
     }
     else {
-        h = update_map(h, n - 1, size, states) ;
-        h = if states[n].d <= size { update_map(h, n -1 , size - states[n].d, states)}
-            else { h };
+        update_map(h, n - 1, size, states) ;
+        if states[n].d <= size { update_map(h, n -1 , size - states[n].d, states)};
 
         let best_fit = cmp::max(
                 *(h.get(&(n - 1, size)).unwrap()),
@@ -60,8 +58,6 @@ fn update_map(mut h:HashMap<(usize, i32), i32>, n:usize, size:i32, states:&Vec<&
 
         h.insert((n, size), best_fit);
     }
-
-    h
 }
 
 fn main() {
@@ -101,7 +97,7 @@ fn main() {
         let loosable_states = states.iter().filter(|&s| s.cost().is_finite())
             .collect::<Vec<&State>>();
 
-        h = update_map(h, loosable_states.len() - 1, knp_size, &loosable_states);
+        update_map(&mut h, loosable_states.len() - 1, knp_size, &loosable_states);
 
         let total_winnable_voters:i32 = loosable_states.iter().map(|&v| v.w()).sum();
         println!("{}",
