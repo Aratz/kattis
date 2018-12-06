@@ -3,6 +3,7 @@ use std::fmt;
 use std::cmp;
 use std::io::{self, BufRead};
 use std::cmp::Ordering;
+use std::collections::HashMap;
 
 
 struct State {
@@ -30,6 +31,39 @@ impl fmt::Debug for State {
     }
 }
 
+fn update_map(mut h:HashMap<(usize, i32), i32>, n:usize, size:i32, states:&Vec<&State>)
+    -> HashMap<(usize, i32), i32> {
+    if h.contains_key(&(n, size)) { () }
+    else if n == 0 {
+        if states[n].d <= size {
+            h.insert((n, size), states[n].w());
+        }
+        else {
+            h.insert((n, size), 0);
+        }
+    }
+    else if size == 0{
+        h.insert((n, size), 0);
+    }
+    else {
+        h = update_map(h, n - 1, size, states) ;
+        h = if states[n].d <= size { update_map(h, n -1 , size - states[n].d, states)}
+            else { h };
+
+        let best_fit = cmp::max(
+                *(h.get(&(n - 1, size)).unwrap()),
+                if states[n].d <= size
+                    { h.get(&(n - 1, size - states[n].d)).unwrap() + states[n].w() }
+                else
+                    { 0 }
+                );
+
+        h.insert((n, size), best_fit);
+    }
+
+    h
+}
+
 fn main() {
     let stdin = io::stdin();
 
@@ -55,22 +89,23 @@ fn main() {
 
     states.sort_by(|a, b| a.cost().partial_cmp(&b.cost()).unwrap_or(Ordering::Equal));
 
-    let winable_states = states.iter().filter(|&s| s.cost().is_finite());
+    let unwinable_delegates:i32 = states.iter().filter(|&s| s.cost().is_infinite())
+        .map(|x| x.d).sum();
 
-    let mut delegates = 0;
-    let mut voters = 0;
-    for state in winable_states {
-        delegates += state.d;
-        voters += state.w();
-
-        if delegates >= needed_delegates {
-            break;
-        }
-    }
-    if delegates >= needed_delegates {
-        println!("{}", voters);
-    }
-    else {
+    let knp_size = total_delegates - needed_delegates - unwinable_delegates;
+    if knp_size < 0 {
         println!("impossible");
     }
+    else {
+        let mut h = HashMap::new();
+        let loosable_states = states.iter().filter(|&s| s.cost().is_finite())
+            .collect::<Vec<&State>>();
+
+        h = update_map(h, loosable_states.len() - 1, knp_size, &loosable_states);
+
+        let total_winnable_voters:i32 = loosable_states.iter().map(|&v| v.w()).sum();
+        println!("{}",
+                 total_winnable_voters - h.get(&(loosable_states.len() - 1, knp_size)).unwrap());
+    }
+
 }
