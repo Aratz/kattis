@@ -21,4 +21,6 @@ for _ in range(t):
         print("NO")
     else:
         print("YES")
-
+    finally:
+        for _ in range(j + 1, n):
+            input()
