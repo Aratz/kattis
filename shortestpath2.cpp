@@ -18,10 +18,16 @@ int reach(int t, const vi & edge){
     /**
      * Time at which node `edge[1]` will be reached.
      */
-    if (t < edge[2])
-        return edge[2] + edge[4];
-    else if (edge[3])
-        return edge[2] + ((int) ceil(1.0 * (t - edge[2]) / edge[3]))*edge[3] + edge[4];
+    int u = edge[0];
+    int v = edge[1];
+    int t_0 = edge[2];
+    int P = edge[3];
+    int d = edge[4];
+
+    if (t < t_0)
+        return t_0 + d;
+    else if (P)
+        return t_0 + ((int) ceil(1.0 * (t - t_0) / P))*P + d;
     else
         return -1;
 }
@@ -48,7 +54,7 @@ int main(){
         dist[s] = 0;
 
         int current_node = s;
-        do{
+        while(true){
             for(auto edge:graph[current_node]){
                 int d = reach(dist[edge[0]], edge);
                 if (d == -1)
@@ -59,11 +65,11 @@ int main(){
                 }
             }
 
-            if (!pq.empty()){
-                current_node = pq.top().second;
-                pq.pop();
-            }
-        } while(!pq.empty());
+            if(pq.empty())
+                break;
+
+            current_node = pq.top().second; pq.pop();
+        }
 
         while(Q--){
             int q;
