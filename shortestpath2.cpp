@@ -58,7 +58,11 @@ int main(){
                     pq.push(ii(dist[edge[0]] - d, edge[1]));
                 }
             }
-            current_node = pq.top().second; pq.pop();
+
+            if (!pq.empty()){
+                current_node = pq.top().second;
+                pq.pop();
+            }
         } while(!pq.empty());
 
         while(Q--){
