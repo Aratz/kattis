@@ -7,11 +7,17 @@ long long T;
 long long X[NMAX], a[NMAX];
 long long A[NMAX][NMAX], At[NMAX][NMAX], res[NMAX][NMAX];
 
+long long mod(long long a, long long b)
+{
+    long long r = a % b;
+    return r < 0 ? r + b : r;
+}
+
 void vecmul(long long A[NMAX][NMAX], long long X[NMAX], long long R[NMAX]){
     for(int i=0;i<N+1;i++){
         R[i] = 0;
         for(int j=0;j<N+1;j++){
-            R[i] = (R[i] + A[i][j]*X[j])%M;
+            R[i] = mod(R[i] + mod(A[i][j]*X[j],M),M);
         }
     }
 }
@@ -21,7 +27,7 @@ void matmul(long long A[NMAX][NMAX], long long B[NMAX][NMAX], long long C[NMAX][
         for(int j=0;j<N+1;j++){
             C[i][j] = 0;
             for(int k=0;k<N+1;k++){
-                C[i][j] = (C[i][j] + A[i][k]*B[k][j])%M;
+                C[i][j] = mod(C[i][j] + mod(A[i][k]*B[k][j],M),M);
             }
         }
     }
@@ -66,10 +72,13 @@ int main(){
         }
 
         if(T<N){
-            printf("%lli\n", X[N-T]%M);
+            printf("%lli\n", mod(X[N-T],M));
         }
         else{
-            for(int i=0;i<log(T-N+1)/log(2)+1;i++){
+            //for(int i=0;i<log(T-N+1)/log(2)+1;i++){
+            int imax = 0;
+            while ((((long long) 1) << imax++) < T - N + 1);
+            for(int i=0;i<imax+1;i++){
                 if(i){
                     matmul(At, At, Att);
                     for(int i=0;i<N+1;i++){
@@ -90,7 +99,7 @@ int main(){
             }
             long long R[NMAX];
             vecmul(res, X, R);
-            printf("%lli\n", R[1]%M);
+            printf("%lli\n", mod(R[1],M));
         }
     }
     return 0;
