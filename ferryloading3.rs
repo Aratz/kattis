@@ -39,6 +39,7 @@ fn main() {
             if side_car.is_some()
                 && side_car.unwrap().1 <= central_time {
                 // Load
+                eprintln!("Loading");
                 let mut free_spots = n;
                 while free_spots > 0
                     && banks[ferry_side].front().is_some()
@@ -60,14 +61,17 @@ fn main() {
             //    && arrival <= central_time {
             else if other_side_car.is_some()
                 && other_side_car.unwrap().1 <= central_time {
+                eprintln!("Crossing empty");
                 // Cross
                 central_time += t;
                 ferry_side = 1 - ferry_side;
             }
             else {
+                eprint!("Waiting {} ", central_time);
                 // Wait until next car arrives on either side
-                central_time += banks.iter().map(|bank| bank.front())
+                central_time = banks.iter().map(|bank| bank.front())
                     .filter_map(|x| x).map(|x| x.1).min().unwrap();
+                eprintln!("{}", central_time);
             }
         }
 
