@@ -9,7 +9,7 @@ fn quickselect(list: &mut [f32], k:usize) -> f32 {
         list[0]
     }
     else {
-        let pivot = 0;
+        let pivot = list.len()/2;
         list.swap(pivot, list.len() - 1);
         let mut j = 0;
         for i in 0..list.len() - 1 {
