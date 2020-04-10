@@ -41,9 +41,11 @@ fn main() {
     let mut densities = Vec::<f32>::new();
 
     for r_h in 1..cmp::min(b,h) + 1 {
-        for r_w in cmp::max(1, a/r_h)..cmp::min(b/r_h, w) + 1 {
+        for r_w in (a as f32/r_h as f32).ceil() as usize..cmp::min(b/r_h, w) + 1 {
             for i_h in 1..h - r_h + 2 {
                 for i_w in 1..w - r_w + 2 {
+                    //eprintln!("Rec {}x{} ({}, {}) ({}, {})",
+                    //r_h, r_w, i_h - 1, i_w - 1, i_h + r_h - 1, i_w + r_w - 1);
                     densities.push(
                         (cmap[i_h + r_h - 1][i_w + r_w - 1]
                         + cmap[i_h - 1][i_w - 1]
