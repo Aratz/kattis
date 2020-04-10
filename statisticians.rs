@@ -4,6 +4,44 @@ use std::cmp;
 const MAX_H:usize = 155;
 const MAX_W:usize = 132;
 
+fn quickselect(list: &mut [f32], k:usize) -> f32 {
+    if list.len() == 1 {
+        list[0]
+    }
+    else {
+        let pivot = 0;
+        list.swap(pivot, list.len() - 1);
+        let mut j = 0;
+        for i in 0..list.len() - 1 {
+            if list[i] <= list[list.len() - 1] {
+                list.swap(i, j);
+                j += 1;
+            }
+        }
+        list.swap(j, list.len() - 1);
+
+        if k < j {
+            quickselect(&mut list[..j], k)
+        }
+        else if k > j{
+            quickselect(&mut list[j + 1..], k - j - 1)
+        }
+        else {
+            list[j]
+        }
+    }
+}
+
+fn quickselect_median(list : &mut [f32]) -> f32 {
+    if list.len() % 2 == 1 {
+        quickselect(list, list.len()/2)
+    }
+    else {
+        (quickselect(list, list.len()/2)
+         + quickselect(list, list.len()/2 - 1))/2.
+    }
+}
+
 fn main() {
     let mut map = [[0; MAX_W]; MAX_H];
     let mut cmap = [[0; MAX_W]; MAX_H];
@@ -56,9 +94,7 @@ fn main() {
         }
     }
 
-    densities.sort_by(|a, b| b.partial_cmp(a).unwrap());
+    //densities.sort_by(|a, b| b.partial_cmp(a).unwrap());
 
-    println!("{}", if densities.len() % 2 == 0
-             { (densities[densities.len()/2 - 1] + densities[densities.len()/2])/2.}
-             else { densities[densities.len()/2] });
+    println!("{}", quickselect_median(&mut densities));
 }
