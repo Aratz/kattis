@@ -1,6 +1,9 @@
 use std::io::{self, BufRead};
 
-fn spread(mut map: &mut Vec<Vec<usize>>, start: (usize, usize), color: usize) {
+const RMAX:usize = 1010;
+const CMAX:usize = 1010;
+
+fn spread(mut map: &mut [[usize; CMAX]; RMAX], start: (usize, usize), r:usize, c:usize, color: usize) {
     let neighbors:Vec<(i32, i32)> = vec![
         (start.0 as i32 - 1, start.1 as i32),
         (start.0 as i32 + 1, start.1 as i32),
@@ -13,12 +16,12 @@ fn spread(mut map: &mut Vec<Vec<usize>>, start: (usize, usize), color: usize) {
     map[start.0][start.1] = color;
 
     let valid_neighbors = neighbors.iter().filter(|(i, j)|
-        0 <= *i && *i < map.len() as i32
-     && 0 <= *j && *j < map[0].len() as i32).collect::<Vec<_>>();
+        0 <= *i && *i < r as i32
+     && 0 <= *j && *j < c as i32).collect::<Vec<_>>();
 
     for (i, j) in valid_neighbors.iter() {
         if map[*i as usize][*j as usize] == zone {
-            spread(&mut map, (*i as usize, *j as usize), color);
+            spread(&mut map, (*i as usize, *j as usize), r, c, color);
         }
     }
 }
@@ -31,13 +34,12 @@ fn main() {
         .map(|x| x.parse::<usize>().unwrap()).collect::<Vec<_>>();
     let (r, c) = (rc[0], rc[1]);
 
-    let mut map = Vec::new();
+    let mut map = [[0; CMAX]; RMAX];
 
-    for _ in 0..r {
-        map.push(
-            lines.next().unwrap().unwrap().chars()
-            .map(|x| x.to_digit(10).unwrap() as usize).collect::<Vec<_>>()
-            );
+    for i in 0..r {
+        for (j, zone) in lines.next().unwrap().unwrap().chars().enumerate() {
+            map[i][j] = zone.to_digit(10).unwrap() as usize;
+        }
     }
 
     let mut current_color_bin = 2;
@@ -47,11 +49,11 @@ fn main() {
         for j in 0..c {
             if map[i][j] < 2 {
                 if map[i][j] == 0 {
-                    spread(&mut map, (i, j), current_color_bin);
+                    spread(&mut map, (i, j), r, c, current_color_bin);
                     current_color_bin += 2;
                 }
                 else {
-                    spread(&mut map, (i, j), current_color_dec);
+                    spread(&mut map, (i, j), r, c, current_color_dec);
                     current_color_dec += 2;
                 }
             }
