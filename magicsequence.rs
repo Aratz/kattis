@@ -1,9 +1,4 @@
 use std::io::{self, BufRead};
-use std::mem;
-use std::f32;
-use std::cmp::max;
-
-const BASE: u32 = 16;
 
 struct MagicSequence {
         curr: u32,
@@ -45,25 +40,6 @@ fn magicsequence(a: Vec<u32>, b: u32, c:u32, hash: bool) -> MagicSequence {
         c: c }
 }
 
-fn bucket_sort(l: Vec<u32>, rad: u32) -> Vec<u32>{
-    let mut buckets = vec![Vec::new(); BASE as usize];
-    for &v in l.iter() {
-        buckets[((v >> (rad << 2)) & 0xF) as usize].push(v);
-        //buckets[((v / BASE.pow(rad)) % BASE) as usize].push(v);
-    }
-
-    let mut res = Vec::new();
-    for i in 0..buckets.len() {
-        if rad > 0 {
-            let bucket = mem::replace(&mut buckets[i], Vec::new());
-            buckets[i] = bucket_sort(bucket, rad - 1);
-        }
-        res.extend(buckets[i].iter());
-    }
-
-    res
-}
-
 fn main() {
     let stdin = io::stdin();
 
@@ -81,14 +57,13 @@ fn main() {
         let (x, y) = (xy[0], xy[1]);
 
         // Compute S
-        let s = magicsequence(vec![a; n], b, c, false).collect::<Vec<u32>>();
+        let mut s = magicsequence(vec![a; n], b, c, false).collect::<Vec<u32>>();
 
         // Sort S
-        let r = bucket_sort(s, max((a as f32).log(BASE as f32) as u32, (c as f32).log(BASE as f32) as u32));
+        s.sort();
 
         // Compute hash
-        let v = magicsequence(r, x, y, true).collect::<Vec<_>>();
-        let hash: u32 = *v.iter().last().unwrap();
+        let hash: u32 = magicsequence(s, x, y, true).last().unwrap();
 
         println!("{}", hash);
     }
