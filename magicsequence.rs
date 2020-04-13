@@ -60,7 +60,7 @@ fn main() {
         let mut s = magicsequence(vec![a; n], b, c, false).collect::<Vec<u64>>();
 
         // Sort S
-        s.sort();
+        s.sort_unstable();
 
         // Compute hash
         let hash: u64 = magicsequence(s, x, y, true).last().unwrap();
