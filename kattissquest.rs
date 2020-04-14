@@ -13,9 +13,9 @@ fn main() {
 
     let n = lines.next().unwrap().unwrap().parse::<u32>().unwrap();
 
-    let mut pool: BTreeSet<(u32, u32)> = BTreeSet::new();
+    let mut pool: BTreeSet<(u32, u32, u32)> = BTreeSet::new();
 
-    for _ in 0..n {
+    for cid in 0..n {
         let raw_command = lines.next().unwrap().unwrap().split(" ")
             .map(|s| String::from(s)).collect::<Vec<_>>();
 
@@ -27,17 +27,17 @@ fn main() {
 
         match command {
             Command::Add(e, g) => {
-                pool.insert((e, g));
+                pool.insert((e, g, cid));
             },
             Command::Query(x) => {
                 let mut energy = x;
                 let mut gold = 0;
 
-                while let Some((e, g)) = pool.range((0, 0)..(energy + 1, 0))
+                while let Some((e, g, cid)) = pool.range((0, 0, 0)..(energy + 1, 0, 0))
                     .next_back() {
                         gold += g;
                         energy -= e;
-                        pool.remove(&(*e, *g));
+                        pool.remove(&(*e, *g, *cid));
                 }
 
                 println!("{}", gold);
