@@ -1,4 +1,5 @@
 use std::io::{self, BufRead};
+use std::collections::BTreeSet;
 
 enum Command {
     Add(u32, u32),
@@ -12,7 +13,7 @@ fn main() {
 
     let n = lines.next().unwrap().unwrap().parse::<u32>().unwrap();
 
-    let mut pool: Vec<(u32, u32)> = Vec::new();
+    let mut pool: BTreeSet<(u32, u32)> = BTreeSet::new();
 
     for _ in 0..n {
         let raw_command = lines.next().unwrap().unwrap().split(" ")
@@ -26,18 +27,19 @@ fn main() {
 
         match command {
             Command::Add(e, g) => {
-                pool.push((e, g));
+                pool.insert((e, g));
             },
             Command::Query(x) => {
                 let mut energy = x;
                 let mut gold = 0;
 
-                while let Some(((e, g), i)) = pool.iter().enumerate()
-                    .filter(|(_, (e, _))| *e <= energy).map(|(i, v)| (v, i)).max() {
+                while let Some((e, g)) = pool.range((0, 0)..(energy + 1, 0))
+                    .next_back() {
                         gold += g;
                         energy -= e;
-                        pool.remove(i);
-                    }
+                        pool.remove(&(*e, *g));
+                }
+
                 println!("{}", gold);
             }
         }
