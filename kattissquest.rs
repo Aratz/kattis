@@ -2,8 +2,8 @@ use std::io::{self, BufRead};
 use std::collections::BTreeSet;
 
 enum Command {
-    Add(u32, u32),
-    Query(u32),
+    Add(u64, u64),
+    Query(u64),
 }
 
 fn main() {
@@ -11,9 +11,9 @@ fn main() {
 
     let mut lines = stdin.lock().lines();
 
-    let n = lines.next().unwrap().unwrap().parse::<u32>().unwrap();
+    let n = lines.next().unwrap().unwrap().parse::<u64>().unwrap();
 
-    let mut pool: BTreeSet<(u32, u32, u32)> = BTreeSet::new();
+    let mut pool: BTreeSet<(u64, u64, u64)> = BTreeSet::new();
 
     for cid in 0..n {
         let raw_command = lines.next().unwrap().unwrap().split(" ")
