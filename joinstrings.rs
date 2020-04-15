@@ -21,6 +21,7 @@ fn main() {
         let new_string = String::from(&strings[a]) + &strings[b];
 
         strings[a] = new_string;
+        strings[b] = String::new();
 
         if i == n - 2 {
             println!("{}", strings[a]);
