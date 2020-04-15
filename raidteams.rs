@@ -51,6 +51,7 @@ fn main() {
             }
         }
         if team.len() < 3 { break; };
+        team.sort();
 
         println!("{} {} {}", team[0], team[1], team[2]);
     }
