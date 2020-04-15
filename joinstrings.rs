@@ -28,7 +28,7 @@ fn main() {
         last = a;
         let e_s = end[a];
         next[e_s] = b;
-        end[a] = b;
+        end[a] = end[b];
     }
 
     loop {
