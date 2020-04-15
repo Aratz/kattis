@@ -9,10 +9,12 @@ fn main() {
 
     let mut strings:Vec<String> = Vec::with_capacity(n);
     let mut next: Vec<usize> = Vec::with_capacity(n);
+    let mut end: Vec<usize> = Vec::with_capacity(n);
 
     for i in 0..n {
         strings.push(String::from(lines.next().unwrap().unwrap()));
         next.push(i);
+        end.push(i);
     }
 
 
@@ -21,14 +23,12 @@ fn main() {
     for _ in 0..n - 1 {
         let ab = lines.next().unwrap().unwrap().split(" ")
             .map(|v| v.parse::<usize>().unwrap()).collect::<Vec<_>>();
-        let (mut a, b) = (ab[0] - 1, ab[1] - 1);
+        let (a, b) = (ab[0] - 1, ab[1] - 1);
 
         last = a;
-
-        while a != next[a] {
-            a = next[a];
-        }
-        next[a] = b;
+        let e_s = end[a];
+        next[e_s] = b;
+        end[a] = b;
     }
 
     loop {
