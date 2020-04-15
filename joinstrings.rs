@@ -13,7 +13,9 @@ fn main() {
         strings.push(String::from(lines.next().unwrap().unwrap()));
     }
 
-    for i in 0..n - 1 {
+    let mut last = 0;
+
+    for _ in 0..n - 1 {
         let ab = lines.next().unwrap().unwrap().split(" ")
             .map(|v| v.parse::<usize>().unwrap()).collect::<Vec<_>>();
         let (a, b) = (ab[0] - 1, ab[1] - 1);
@@ -23,8 +25,7 @@ fn main() {
         strings[a] = new_string;
         strings[b] = String::new();
 
-        if i == n - 2 {
-            println!("{}", strings[a]);
-        }
+        last = a;
     }
+    println!("{}", strings[last]);
 }
