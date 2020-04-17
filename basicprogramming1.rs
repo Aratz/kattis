@@ -11,7 +11,7 @@ fn main() {
     let (n, t) = (nt[0], nt[1]);
 
     let mut a = lines.next().unwrap().unwrap().split(" ")
-        .map(|x| x.parse::<u32>().unwrap()).collect::<Vec<_>>();
+        .map(|x| x.parse::<u64>().unwrap()).collect::<Vec<_>>();
 
     match t {
         1 => {
@@ -33,10 +33,10 @@ fn main() {
             println!("{}", a[1]);
         },
         4 => {
-            println!("{}", a.iter().sum::<u32>());
+            println!("{}", a.iter().sum::<u64>());
         },
         5 => {
-            println!("{}", a.iter().filter(|&&x| x % 2 == 0).sum::<u32>());
+            println!("{}", a.iter().filter(|&&x| x % 2 == 0).sum::<u64>());
         },
         6 => {
             println!("{}", a.iter().map(|&x| ((x % 26) as u8 + 'a' as u8) as char).collect::<String>())
