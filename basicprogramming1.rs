@@ -51,7 +51,7 @@ fn main() {
                 }
                 visited.insert(i);
                 i = a[i] as usize;
-                if i > a.len() {
+                if i >= a.len() {
                     println!("Out");
                     break;
                 }
