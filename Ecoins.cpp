@@ -15,7 +15,7 @@ long fill(long s1, long s2){
     if(DP[s1][s2]==-2){
     long min = 2*S;
     for(long i=0;i<m;i++){
-        if(s1-p[i][0]>=0 && s2-p[i][1]>=0){
+        if(p[i][0] + p[i][1] > 0 && s1-p[i][0]>=0 && s2-p[i][1]>=0){
             long res = fill(s1-p[i][0],s2-p[i][1]);
             if(res!=-1 && res+1<min){
                 min = res+1;
