@@ -12,10 +12,11 @@ impl FenwickTree {
     fn rsq0(&self, mut b: usize) -> i64 {
         let mut sum = 0;
         while b > 0 {
-            eprintln!("rsq0: {}", b);
+            //eprintln!("rsq0: {}", b);
             sum += self.ft[b];
             b -= lsone(b as i64) as usize;
         }
+        //eprintln!();
 
         sum
     }
@@ -26,10 +27,11 @@ impl FenwickTree {
 
     fn adjust(&mut self, mut k: usize, v: i64) {
         while k < self.ft.len() {
-            eprintln!("adjust: {}", k);
+            //eprintln!("adjust: {}", k);
             self.ft[k] += v;
             k += lsone(k as i64) as usize;
         }
+        //eprintln!();
     }
 }
 
