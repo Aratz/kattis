@@ -87,7 +87,8 @@ fn angle(o: Point, a: Point, b: Point) -> f64 {
 #[allow(non_snake_case)]
 fn solve(s: Point, e: Point, c: Point, r: f64, t: f64) -> f64{
     //Compute projection of e over sc
-    let p0 = (dot(e - s, c - s)/(norm(e - s).powi(2))) * (e - s) + Point { x: 0.101234, y: 0.11234 };
+    let p0 = (dot(e - s, c - s)/(norm(e - s)*norm(e - s))) * (e - s)
+        + Point { x: 0.101234, y: 0.11234 } + s;
     let e0 = (1./norm(e - s)) * (e - s);
     let mut e1 = Point { x: e0.y, y: -e0.x };
 
@@ -96,7 +97,7 @@ fn solve(s: Point, e: Point, c: Point, r: f64, t: f64) -> f64{
     }
 
     //If e not in lava, return |sc| or if can cross lava in one go
-    if dot(p0 - c, p0 - c) > r * r || t > 2. * r {
+    if norm(p0 - c) > r || t > 2. * r {
         return norm(e - s);
     }
 
