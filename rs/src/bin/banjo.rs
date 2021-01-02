@@ -1,7 +1,7 @@
 use std::ops;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-struct Point { x: f32, y: f32, }
+struct Point { x: f64, y: f64, }
 
 impl ops::Add<Point> for Point {
     type Output = Point;
@@ -19,15 +19,15 @@ impl ops::Sub<Point> for Point {
     }
 }
 
-impl ops::Mul<f32> for Point {
+impl ops::Mul<f64> for Point {
     type Output = Point;
 
-    fn mul(self, k: f32) -> Self::Output {
+    fn mul(self, k: f64) -> Self::Output {
         Self::Output { x: k * self.x, y: k * self.y }
     }
 }
 
-impl ops::Mul<Point> for f32 {
+impl ops::Mul<Point> for f64 {
     type Output = Point;
 
     fn mul(self, p: Point) -> Self::Output {
@@ -35,17 +35,17 @@ impl ops::Mul<Point> for f32 {
     }
 }
 
-fn dot(a: Point, b: Point) -> f32 {
+fn dot(a: Point, b: Point) -> f64 {
     a.x * b.x + a.y * b.y
 }
 
-fn norm(p: Point) -> f32 {
+fn norm(p: Point) -> f64 {
     dot(p, p).sqrt()
 }
 
 /// Compute tangent point going through S and touching circle centered in c
 /// with radius r. The points returned is the closest one to s0.
-fn get_tangent_point(st: Point, mut s0: Point, ce: Point, r: f32) -> Point {
+fn get_tangent_point(st: Point, mut s0: Point, ce: Point, r: f64) -> Point {
     let tol = 1e-5;
 
     let f = |p: Point| Point {
@@ -80,12 +80,12 @@ fn get_tangent_point(st: Point, mut s0: Point, ce: Point, r: f32) -> Point {
 }
 
 /// Compute angle between points aob
-fn angle(o: Point, a: Point, b: Point) -> f32 {
+fn angle(o: Point, a: Point, b: Point) -> f64 {
     (dot(a - o, b - o)/(norm(a - o)*norm(b - o))).acos()
 }
 
 #[allow(non_snake_case)]
-fn solve(s: Point, e: Point, c: Point, r: f32, t: f32) -> f32{
+fn solve(s: Point, e: Point, c: Point, r: f64, t: f64) -> f64{
     //Compute projection of e over sc
     let p0 = (dot(e - s, c - s)/(norm(e - s).powi(2))) * (e - s) + Point { x: 0.101234, y: 0.11234 };
     let e0 = (1./norm(e - s)) * (e - s);
@@ -100,11 +100,12 @@ fn solve(s: Point, e: Point, c: Point, r: f32, t: f32) -> f32{
         return norm(e - s);
     }
 
-    let p0 = r * e1;
+    let p0s = c + r*e1 - r*e0;
+    let p0e = c + r*e1 + r*e0;
 
     //else compute tangent points
-    let mut sc = get_tangent_point(s, p0, c, r);
-    let mut ec = get_tangent_point(e, p0, c, r);
+    let mut sc = get_tangent_point(s, p0s, c, r);
+    let mut ec = get_tangent_point(e, p0e, c, r);
 
     //compute angle between tangent points
     let A = angle(c, sc, ec);
@@ -145,7 +146,7 @@ fn main() {
     let mut lines = stdin.lock().lines();
 
     while let Some(l) = lines.next() {
-        let raw_input: Vec<f32> = l.unwrap().split(' ')
+        let raw_input: Vec<f64> = l.unwrap().split(' ')
             .map(|v| v.parse().unwrap()).collect();
 
         let s = Point { x: raw_input[0], y: raw_input[1] };
