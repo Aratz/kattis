@@ -70,11 +70,6 @@ Point operator*(const Point& a, const int k) {
 
 
 int main() {
-    //Point a(0, 0), b(10, 0);
-    //Point c(12, 2);
-    //printf("%lf\n", c.dist2line(a, b));
-
-    //*
     int t;
     cin >> t;
     while(t--) {
@@ -99,19 +94,19 @@ int main() {
         double boat_diam = MAX_DIST;
 
         for(auto p: inner){
-            for(int i = 0; i < outer.size() - 1; i++) {
-                boat_diam = min(boat_diam, p.dist2line(outer[i], outer[i+1]));
+            for(int i = 0; i < outer.size(); i++) {
+                boat_diam = min(boat_diam, p.dist2line(outer[i], outer[(i+1)%outer.size()]));
             }
         }
+
         for(auto p: outer){
-            for(int i = 0; i < inner.size() - 1; i++) {
-                boat_diam = min(boat_diam, p.dist2line(inner[i], inner[i+1]));
+            for(int i = 0; i < inner.size(); i++) {
+                boat_diam = min(boat_diam, p.dist2line(inner[i], inner[(i+1)%inner.size()]));
             }
         }
 
         cout.precision(10);
         cout << boat_diam / 2 << "\n";
     }
-    //*/
     return 0;
 }
